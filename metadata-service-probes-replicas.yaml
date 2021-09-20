@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: metadata-replica-probes
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: metadata-pod
+  template:
+    metadata:
+      labels:
+        app: metadata-pod
+    spec:
+      containers:
+      - name: metadata-replica-probes
+        image: sunitparekh/metadata:v1.0
+        ports:
+          - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 50
+          periodSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 50
+          periodSeconds: 2
